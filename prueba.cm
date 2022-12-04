@@ -1,0 +1,81 @@
+// variables globales
+binarysem erue,hrue,ecua,eman,hcua,hman; // Declaracion semaforos
+int numrue=0,numcua=0,numman=0;          // Contadores para el numero de ruedas
+
+//Cuerpo OP1
+void proc1(){                            // Cuerpo Operario 1
+ while(1==1){                            // While infinito
+  if(numrue==0){                         // Solo se generan si el stock de ruedas es igual a 0
+   wait(erue);                           // Manda una rueda a la cola
+   numrue++;                             // Sube el stock de ruedas
+   signal(hrue);                         // Da el paso para el montador
+  }
+ }
+}
+
+//Cuerpo OP2                             //Se repite la misma estructura del Operario 1
+void proc2(){ 
+ while(1==1){
+  if(numcua==0){
+   wait(ecua);
+   numcua++;
+   signal(hcua);
+  }
+ } 
+}
+
+//Cuerpo OP3                             //Se repite la misma estructura del Operario 1
+void proc3(){ 
+ while(1==1){
+  if(numman==0){
+   wait(eman);
+   numman++;
+   signal(hman);
+  }
+ }
+}
+
+//Cuerpo OP4
+void proc4(){
+
+while(1==1){
+
+ if(0<numrue){                            //Solo mientras el stock de ruedas sea mayor a 0
+ wait(hrue);                              //Montador esperando en cola
+ signal(erue);                            //Montador deja pasar una rueda (agarra una rueda)
+ numrue--;}                               //stock de ruedas disminuye en 1
+ 
+ if(0<numrue){
+ wait(hrue); 
+ signal(erue);
+ numrue--;}
+
+ if(0<numcua){
+ wait(hcua);
+ signal(ecua);
+ numcua--;}
+ 
+ if(0<numman){
+ wait(hman);
+ signal(eman);
+ numman--;}
+
+ 
+ cout<<"El numero de Ruedas es: "<<numrue<<endl;
+ cout<<"El numero de Cuadros es: "<<numcua<<endl;
+ cout<<"El numero de Manecillas es: "<<numman<<endl;
+ // cout<<"Se elabora una bicicleta"<<endl;
+ }
+}
+
+
+main(){
+ initialsem( erue, 1);                     //define el numero maximo de procesos en cola para el semaforo
+ initialsem( ecua, 1);
+ initialsem( eman, 1);
+ initialsem( hrue, 0);
+ initialsem( hcua, 0);
+ initialsem( hman, 0);
+ cobegin{proc1();proc2();proc3();proc4();} //Inicia concurrentemente los procesos 1 2 3 y 4
+}
+
